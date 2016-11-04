@@ -1,0 +1,9 @@
+c:\users\hasee\documents\visual studio 2015\Projects\AccTableDataShow\AccTableDataShow\bin\Debug\AccTableDataShow.exe.config
+c:\users\hasee\documents\visual studio 2015\Projects\AccTableDataShow\AccTableDataShow\bin\Debug\AccTableDataShow.exe
+c:\users\hasee\documents\visual studio 2015\Projects\AccTableDataShow\AccTableDataShow\bin\Debug\AccTableDataShow.pdb
+c:\users\hasee\documents\visual studio 2015\Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.csprojResolveAssemblyReference.cache
+c:\users\hasee\documents\visual studio 2015\Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.Form1.resources
+c:\users\hasee\documents\visual studio 2015\Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.Properties.Resources.resources
+c:\users\hasee\documents\visual studio 2015\Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.csproj.GenerateResource.Cache
+c:\users\hasee\documents\visual studio 2015\Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.exe
+c:\users\hasee\documents\visual studio 2015\Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.pdb
