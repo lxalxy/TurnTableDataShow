@@ -68,9 +68,9 @@ namespace AccTableDataShow
                 {
                     textBox9.Text = line.Split(':')[1].Replace(" ", "");
                 }
-                if (line.Contains("Amp"))
+                if (line.Contains(" rad"))
                 {
-                    textBox10.Text = line.Split(':')[1].Replace(" ", "");
+                    textBox10.Text = line.Replace(" ", "");
                 }
                 if (line.Contains("|") && line[0] != 'T')
                 {
@@ -79,7 +79,8 @@ namespace AccTableDataShow
                     dr["Acceleration"] = float.Parse(array[1]);
                     dr["Velocity"] = float.Parse(array[2]);
                     dr["Displacement"] = float.Parse(array[3]);
-                    dr["ADC_Data"] = array[4];
+                    if(array.Length > 4)
+                        dr["ADC_Data"] = array[4];
 
                     dt.Rows.Add(dr);
                 }
@@ -97,6 +98,9 @@ namespace AccTableDataShow
             textBox5.Text = ls_vel.Min().ToString();
             textBox3.Text = ls_dis.Max().ToString();
             textBox6.Text = ls_dis.Min().ToString();
+            chart1.Series["Acc"].ToolTip = "角加速度为：#VAL rad/s";
+            chart1.Series["Vel"].ToolTip = "角速度为：#VAL rad/s";
+            chart1.Series["Dis"].ToolTip = "角位移为：#VAL rad";
             chart1.Series["Acc"].Points.DataBindY(ls_acc);
             chart1.Series["Vel"].Points.DataBindY(ls_vel);
             chart1.Series["Dis"].Points.DataBindY(ls_dis);
@@ -169,6 +173,42 @@ namespace AccTableDataShow
         private void dataGridView1_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
         {
             e.Row.HeaderCell.Value = string.Format("{0}", e.Row.Index + 1);
+        }
+
+        private void chart1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            chart1.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+            chart1.ChartAreas[0].AxisY.ScaleView.ZoomReset();
+        }
+
+        private void chart2_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            chart2.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+            chart2.ChartAreas[0].AxisY.ScaleView.ZoomReset();
+        }
+
+        private void chart2_MouseMove(object sender, MouseEventArgs e)
+        {
+            HitTestResult result = chart2.HitTest(e.X, e.Y);
+
+            if (result.ChartElementType == ChartElementType.DataPoint)
+            {
+                Cursor = Cursors.Hand;
+                label11.Text = chart2.Series[0].Points[result.PointIndex].XValue.ToString();
+
+                label10.Text = chart2.Series[0].Points[result.PointIndex].YValues[0].ToString();
+
+                ///
+
+                ////var aa = result.Object as DataPoint;
+                ////   txtX.Text = aa.XValue.ToString();
+                ////  txtY.Text = aa.YValues[0].ToString();
+            }
+            else if (result.ChartElementType != ChartElementType.Nothing)
+            {
+                Cursor = Cursors.Default;
+
+            }
         }
     }
 
