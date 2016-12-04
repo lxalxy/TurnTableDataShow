@@ -20,7 +20,9 @@ namespace AccTableDataShow
         }
 
         public string FilePath;
+        public string FileADCPath;
         public DataTable dt;
+        public DataTable dtADC;
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -32,15 +34,27 @@ namespace AccTableDataShow
             {
                 FilePath = openFileDialog.FileName;
             }
+            FileADCPath = FilePath + "_RAW_ADC";
+            label23.Text = Path.GetFileNameWithoutExtension(FilePath);
             read_data();
+            read_ADCdata();
             dataGridView1.DataSource = dt;
             show_data();
-            if(checkBox1.Checked)
+            if (checkBox1.Checked)
                 show_data_fft();
+            if (checkBox2.Checked)
+            {
+                this.Width = 1820;
+                CenterToScreen();
+                show_ADCdata();
+                if (checkBox1.Checked)
+                    show_ADCdata_fft();
+            }
         }
 
         private void read_data()
         {
+            bool isADC = false;
             dt = new DataTable();
             dt.Columns.AddRange(new DataColumn[] {
                 new DataColumn("Time",typeof(float)),
@@ -56,22 +70,44 @@ namespace AccTableDataShow
             {
                 dr = dt.NewRow();
                 string line = sr.ReadLine();
-                if (line.Contains("Hz"))
+                if (line.Contains("Hz") && !isADC)
                 {
                     textBox7.Text = line.Replace(" ", "");
                 }
-                if (line.Contains("°"))
+                if (line.Contains("°") && !isADC)
                 {
                     textBox8.Text = line.Split(':')[1].Replace(" ", "");
                 }
-                if (line.Contains("dB"))
+                if (line.Contains("dB") && !isADC)
                 {
                     textBox9.Text = line.Split(':')[1].Replace(" ", "");
                 }
-                if (line.Contains(" rad"))
+                if (line.Contains(" rad") && !isADC)
                 {
                     textBox10.Text = line.Replace(" ", "");
                 }
+                if (line.Contains("ADC Data"))
+                {
+                    isADC = true;
+                }
+                if (line.Contains("Hz") && isADC)
+                {
+                    textBox16.Text = line.Replace(" ", "");
+                }
+                if (line.Contains("°") && isADC)
+                {
+                    textBox15.Text = line.Split(':')[1].Replace(" ", "");
+                }
+                if (line.Contains("dB") && isADC)
+                {
+                    textBox14.Text = line.Split(':')[1].Replace(" ", "");
+                }
+                if (line.Contains("V") && isADC)
+                {
+                    textBox13.Text = line.Replace(" ", "");
+                    isADC = false;
+                }
+
                 if (line.Contains("|") && line[0] != 'T')
                 {
                     string[] array = line.Split('|');
@@ -86,12 +122,38 @@ namespace AccTableDataShow
                 }
             }
         }
+
+        private void read_ADCdata()
+        {
+            dtADC = new DataTable();
+            dtADC.Columns.AddRange(new DataColumn[] {
+                new DataColumn("Time(s)",typeof(float)),
+                new DataColumn("ADC(V)",typeof(float))
+            });
+            DataRow dr = null;
+
+            StreamReader sr = new StreamReader(FileADCPath);
+            while (sr.Peek() > -1)
+            {
+                dr = dtADC.NewRow();
+                string line = sr.ReadLine();
+                if (line.Contains("|") && line[0] != 'T')
+                {
+                    string[] array = line.Split('|');
+                    dr["Time(s)"] = float.Parse(array[0]);
+                    dr["ADC(V)"] = float.Parse(array[1]);
+
+                    dtADC.Rows.Add(dr);
+                }
+            }
+        }
+
         private void show_data()
         {
             ZoomToggle(chart1, true);
-            List<double> ls_acc = get_data_colomn("Acceleration");
-            List<double> ls_vel = get_data_colomn("Velocity");
-            List<double> ls_dis = get_data_colomn("Displacement");
+            List<double> ls_acc = get_data_colomn(dt, "Acceleration");
+            List<double> ls_vel = get_data_colomn(dt, "Velocity");
+            List<double> ls_dis = get_data_colomn(dt, "Displacement");
             textBox1.Text = ls_acc.Max().ToString();
             textBox4.Text = ls_acc.Min().ToString();
             textBox2.Text = ls_vel.Max().ToString();
@@ -106,11 +168,24 @@ namespace AccTableDataShow
             chart1.Series["Dis"].Points.DataBindY(ls_dis);
         }
 
+        private void show_ADCdata()
+        {
+            ZoomToggle(chart3, true);
+            List<double> ls_ADC = get_data_colomn(dtADC, "ADC(V)");
+            textBox12.Text = ls_ADC.Max().ToString();
+            textBox11.Text = ls_ADC.Min().ToString();
+            chart3.Series["ADC(V)"].ToolTip = "ADC值为：#VAL V";
+            chart3.Series["ADC(V)"].Points.DataBindY(ls_ADC);
+            textBox17.Text = (float.Parse(textBox15.Text.Replace("°", "")) - float.Parse(textBox8.Text.Replace("°", ""))).ToString();
+            textBox18.Text = (float.Parse(textBox13.Text.Replace("V", "")) * 1000 / (float.Parse(textBox10.Text.Replace("rad/s²", "")) * 360 / 2 / Math.PI)).ToString();
+
+        }
+
         private void show_data_fft()
         {
             ZoomToggle(chart2, true);
             float Fs = 1 / float.Parse(dt.Rows[0]["Time"].ToString());
-            double[] x = get_data_colomn("Acceleration").ToArray();
+            double[] x = get_data_colomn(dt, "Acceleration").ToArray();
             int n = x.Length;
             double[] freqs = new Double[n / 2];
             for (int i = 0; i < freqs.Length; i++)
@@ -126,7 +201,27 @@ namespace AccTableDataShow
             chart2.Series["Series1"].Points.DataBindXY(freqs, z_half);
         }
 
-        private List<double> get_data_colomn(string ColomnName)
+        private void show_ADCdata_fft()
+        {
+            ZoomToggle(chart4, true);
+            float Fs = 1 / float.Parse(dtADC.Rows[1]["Time(s)"].ToString());
+            double[] x = get_data_colomn(dtADC, "ADC(V)").ToArray();
+            int n = x.Length;
+            double[] freqs = new Double[n / 2];
+            for (int i = 0; i < freqs.Length; i++)
+            {
+                freqs[i] = Fs * i * 0.5 / freqs.Length;
+            }
+            complex[] y = new complex[n];//接收复数结果的数组 
+            double[] z = new Double[n];//接收幅值结果的数组 
+            y = airthm.dft(x, n);
+            z = airthm.amplitude(y, n);
+            double[] z_half = new Double[n / 2];
+            Array.ConstrainedCopy(z, 0, z_half, 0, n / 2);
+            chart4.Series["Series1"].Points.DataBindXY(freqs, z_half);
+        }
+
+        private List<double> get_data_colomn(DataTable dt, string ColomnName)
         {
             List<double> ls = new List<double>();  //存放一整列所有的值 
             foreach (DataRow dr in dt.Rows)
@@ -164,11 +259,22 @@ namespace AccTableDataShow
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkBox1.Checked)
-                show_data_fft();
-            else
-                chart2.Series["Series1"].Points.Clear();
+            if(dt != null)
+            {
+                if (checkBox1.Checked)
+                {
+                    show_data_fft();
+                    if (checkBox2.Checked)
+                        show_ADCdata_fft();
+                }
+                else
+                {
+                    chart2.Series["Series1"].Points.Clear();
+                    chart4.Series["Series1"].Points.Clear();
+                }
+            }
         }
+
 
         private void dataGridView1_RowStateChanged(object sender, DataGridViewRowStateChangedEventArgs e)
         {
@@ -185,6 +291,18 @@ namespace AccTableDataShow
         {
             chart2.ChartAreas[0].AxisX.ScaleView.ZoomReset();
             chart2.ChartAreas[0].AxisY.ScaleView.ZoomReset();
+        }
+
+        private void chart3_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            chart3.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+            chart3.ChartAreas[0].AxisY.ScaleView.ZoomReset();
+        }
+
+        private void chart4_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            chart4.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+            chart4.ChartAreas[0].AxisY.ScaleView.ZoomReset();
         }
 
         private void chart2_MouseMove(object sender, MouseEventArgs e)
@@ -208,6 +326,52 @@ namespace AccTableDataShow
             {
                 Cursor = Cursors.Default;
 
+            }
+        }
+
+        private void chart4_MouseMove(object sender, MouseEventArgs e)
+        {
+            HitTestResult result = chart4.HitTest(e.X, e.Y);
+
+            if (result.ChartElementType == ChartElementType.DataPoint)
+            {
+                Cursor = Cursors.Hand;
+                label20.Text = chart4.Series[0].Points[result.PointIndex].XValue.ToString();
+
+                label19.Text = chart4.Series[0].Points[result.PointIndex].YValues[0].ToString();
+
+                ///
+
+                ////var aa = result.Object as DataPoint;
+                ////   txtX.Text = aa.XValue.ToString();
+                ////  txtY.Text = aa.YValues[0].ToString();
+            }
+            else if (result.ChartElementType != ChartElementType.Nothing)
+            {
+                Cursor = Cursors.Default;
+
+            }
+        }
+
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            if (dt != null)
+            {
+                if (checkBox2.Checked == true)
+                {
+                    show_ADCdata();
+                    this.Width = 1820;
+                }
+                else
+                {
+                    chart3.Series["ADC(V)"].Points.Clear();
+                    this.Width = 1046;
+                }
+                if (checkBox1.Checked == true)
+                {
+                    show_ADCdata_fft();
+                }
+                CenterToScreen();
             }
         }
     }

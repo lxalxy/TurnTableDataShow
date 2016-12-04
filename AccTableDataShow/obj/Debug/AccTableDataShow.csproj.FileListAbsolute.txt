@@ -16,3 +16,12 @@ C:\Users\hasee\Desktop\桌面\My Projects\AccTableDataShow\AccTableDataShow\obj\
 C:\Users\hasee\Desktop\桌面\My Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.Form1.resources
 C:\Users\hasee\Desktop\桌面\My Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.Properties.Resources.resources
 C:\Users\hasee\Desktop\桌面\My Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.csproj.GenerateResource.Cache
+C:\Users\hasee\Desktop\My Projects\AccTableDataShow\AccTableDataShow\bin\Debug\AccTableDataShow.exe.config
+C:\Users\hasee\Desktop\My Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.exe
+C:\Users\hasee\Desktop\My Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.pdb
+C:\Users\hasee\Desktop\My Projects\AccTableDataShow\AccTableDataShow\bin\Debug\AccTableDataShow.exe
+C:\Users\hasee\Desktop\My Projects\AccTableDataShow\AccTableDataShow\bin\Debug\AccTableDataShow.pdb
+C:\Users\hasee\Desktop\My Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.csprojResolveAssemblyReference.cache
+C:\Users\hasee\Desktop\My Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.Form1.resources
+C:\Users\hasee\Desktop\My Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.Properties.Resources.resources
+C:\Users\hasee\Desktop\My Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.csproj.GenerateResource.Cache
