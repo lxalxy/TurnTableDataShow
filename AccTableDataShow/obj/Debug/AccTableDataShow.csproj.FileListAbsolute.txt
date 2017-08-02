@@ -25,3 +25,5 @@ C:\Users\hasee\Desktop\My Projects\AccTableDataShow\AccTableDataShow\obj\Debug\A
 C:\Users\hasee\Desktop\My Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.Form1.resources
 C:\Users\hasee\Desktop\My Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.Properties.Resources.resources
 C:\Users\hasee\Desktop\My Projects\AccTableDataShow\AccTableDataShow\obj\Debug\AccTableDataShow.csproj.GenerateResource.Cache
+C:\Users\hasee\Desktop\My Projects\AccTableDataShow\AccTableDataShow\bin\Debug\AccTableDataShow.exe.CodeAnalysisLog.xml
+C:\Users\hasee\Desktop\My Projects\AccTableDataShow\AccTableDataShow\bin\Debug\AccTableDataShow.exe.lastcodeanalysissucceeded

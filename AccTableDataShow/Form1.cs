@@ -34,6 +34,10 @@ namespace AccTableDataShow
             {
                 FilePath = openFileDialog.FileName;
             }
+            else
+            {
+                return;
+            }
             FileADCPath = FilePath + "_RAW_ADC";
             label23.Text = Path.GetFileNameWithoutExtension(FilePath);
             read_data();
